@@ -13,6 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import huami.com.sensorrecognition.service.BaseSampleService;
+import huami.com.sensorrecognition.utils.SensorBuffer;
+import huami.com.sensorrecognition.utils.SensorModel;
 
 public class MainActivity extends Activity {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
@@ -23,6 +25,7 @@ public class MainActivity extends Activity {
     public static File sSensorBaseFolder = null;
     public static Date sStartDate = null;
 
+    SensorBuffer sensorBuffer;
     boolean mIsRecording = false;
 
     Button mStartBtn = null;
@@ -33,6 +36,12 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mStartBtn = (Button)findViewById(R.id.btn_start);
+
+//        sensorBuffer = new SensorBuffer();
+//        for(int i = 0; i < 2000; i++){
+//            SensorModel model = new SensorModel(i, i, i);
+//            sensorBuffer.add(model);
+//        }
 
         //boolean hasTargetFolder = false;
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -54,7 +63,6 @@ public class MainActivity extends Activity {
         mStartBtn.setText("Stop");
         mIsRecording = true;
         startSensorService(SENSOR_TYPE);
-
     }
 
     private void stopRecord(){

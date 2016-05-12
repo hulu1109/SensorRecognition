@@ -6,7 +6,10 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
+
+
+import huami.com.sensorrecognition.utils.SensorBuffer;
+import huami.com.sensorrecognition.utils.SensorModel;
 
 /**
  * Created by test on 2016/5/5.
@@ -18,6 +21,7 @@ public class BaseSensorService extends BaseSampleService{
     protected int mColumnNum;
     protected int mAccuracy;
 
+    public SensorBuffer sensorBuffer;
 
     public BaseSensorService() { mAccuracy = SensorManager.SENSOR_STATUS_UNRELIABLE; }
 
@@ -25,9 +29,9 @@ public class BaseSensorService extends BaseSampleService{
     public void onCreate() {
         super.onCreate();
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensorBuffer = new SensorBuffer();
     }
 
-    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -59,13 +63,17 @@ public class BaseSensorService extends BaseSampleService{
                 ++mSampleCount;
 
                 float[] fixedValues = new float[mColumnNum];
+//                buffer is class, buffer(event.value[0], [1], [2]);
+//                for(int i = 0; i <mColumnNum; i++){
+//                    fixedValues[i] = event.values[i];
+//                }
+                fixedValues[0] = event.values[0];
+                fixedValues[1] = event.values[1];
+                fixedValues[2] = event.values[2];
 
-                for(int i = 0; i <mColumnNum; i++){
-                    if(i == 0)
-                        fixedValues[i] = event.values[i];
-                    else
-                        fixedValues[i] = mAccuracy;
-                }
+                SensorModel acc;
+                acc = new SensorModel(fixedValues[0], fixedValues[1], fixedValues[2]);
+                sensorBuffer.add(acc);
 
                 String line = Float.toString(fixedValues[0]);
                 for(int i = 1; i <mColumnNum; ++i)
